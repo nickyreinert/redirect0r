@@ -11,7 +11,7 @@
 	
 	$growHtaccess = TRUE;
 	
-	$chunks = 1000;
+	$chunks = 10;
 	
 	$basePath = str_replace(basename(__FILE__), '', $_SERVER['REQUEST_URI']);
 	
@@ -53,7 +53,7 @@
 		}
 
 		
-		if ($i % round($limit / $chunks) === 0)
+		if ($i % round($limit / $chunks) === 0 OR $i === 1)
 		{
 			file_put_contents('.htaccess', $htaccess);
 			
