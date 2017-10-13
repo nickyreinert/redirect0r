@@ -1,11 +1,12 @@
 <?php
 
+	set_time_limit (0);
 
 	ob_start();
 	
 	$limit = 100000;
 	
-	$sleep = 2;
+	$sleep = 10;
 	
 	$repeat = 5;
 	
@@ -81,4 +82,4 @@
 		
 	}
 	
-	echo 'End.';
+	echo 'End.';		
