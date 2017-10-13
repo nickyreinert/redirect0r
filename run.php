@@ -1,5 +1,6 @@
 <?php
 
+
 	ob_start();
 	
 	$limit = 100000;
@@ -14,10 +15,10 @@
 	
 	$basePath = str_replace(basename(__FILE__), '', $_SERVER['REQUEST_URI']);
 	
-	$currentUrl = $_SERVER['REQUEST_SCHEME'].'://'.$_SERVER['SERVER_NAME'].$basePath;
-
-	$dummyPath = 'foobar';
+	$currentUrl = str_replace(basename(__FILE__), '', $_SERVER['SCRIPT_URI']);
 	
+	$dummyPath = 'foobar';
+
 	$htaccess = 'RewriteEngine On'. PHP_EOL;
 	
 	$countRows = 1;
