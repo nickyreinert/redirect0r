@@ -1,6 +1,6 @@
 <?php
 
-	ob_start();
+	if (!isCli()) {ob_start();}
 	
 	prepareSettings();
 
@@ -8,16 +8,16 @@
 	
 	checkIfDummyFileExists();
 	
-	echo 'Start. <br/ ><br/ >';
-	echo 'Test-URL: <a href="'.$settings->scheme.'://'.$settings->host.$settings->urlPath.$settings->dummyPath.'1/'.'">'.$settings->host.$settings->urlPath.$settings->dummyPath.'1/'.'</a> <br /><br />';
-	echo 'rows;delay [ms];sleep [s] <br />';
+	echox('Start.');
+	echox('Test-URL: <a href="'.$settings->scheme.'://'.$settings->host.$settings->urlPath.$settings->dummyPath.'1/'.'">'.$settings->host.$settings->urlPath.$settings->dummyPath.'1/'.'</a>');
+	echox('rows;delay [ms];sleep [s]');
 
 	file_put_contents($settings->dummyPath.'.htaccess', $settings->htAccess->firstLine);
 
 	for ($i = 1; $i <= $settings->limit; ++$i)
 	{
 
-		$settings->htAccess->lines .= PHP_EOL.'Redirect 302 '.$settings->urlPath.$settings->dummyPath.$i.'/'.' '.$settings->urlPath.$settings->dummyPath.'index.php';
+		$settings->htAccess->lines .= PHP_EOL.'Redirect 302 '.$settings->urlPath.'/'.$settings->dummyPath.$i.'/'.' '.$settings->urlPath.'/'.$settings->dummyPath.'index.php';
 			
 		if ($i % round($settings->limit / $settings->chunks) === 0)
 		{
@@ -32,7 +32,7 @@
 
 	}
 
-	echo 'End.';
+	echox('End.');
 	
 	
 	function queryDummyUrl($i)
@@ -49,11 +49,14 @@
 		    
 		    $endTime = round(1000 * (microtime(true) - $startTime));
 
-		    echo str_pad('',4096);
-		    ob_flush();
-		    flush();
-
-		    echo $settings->lines.';'.$endTime.';'.$settings->coolDown.'<br />';
+		    if (!isCli())
+		    {
+			echo str_pad('',4096);
+			ob_flush();
+			flush();
+		    }
+		    
+		    echox($settings->lines.';'.$endTime.';'.$settings->coolDown);
 
 		    sleep($settings->coolDown);
 
@@ -85,6 +88,7 @@
 	    }
 	    
 	    $settings->lines = 1;
+	    
 
 	}
 	
@@ -124,3 +128,32 @@
 
 	}
 	
+	
+	function isCli()
+	{
+		if (PHP_SAPI == 'cli' OR 
+			substr(PHP_SAPI, 0, 3) == 'cgi')
+		{
+			return TRUE;
+			
+		} else {
+			
+			return FALSE;
+		}
+
+	}
+
+	function echoX($string)
+	{
+	    
+	    if (isCli())
+	    {
+		echo strip_tags($string) . PHP_EOL;
+		
+	    } else {
+		
+		echo $string . '<br />';
+	    } 
+		
+
+	}
