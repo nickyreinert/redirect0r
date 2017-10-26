@@ -50,6 +50,8 @@ You need to define a couple of parameters in the file config.json:
 
 * **scheme** - you can define a scheme (http / https) otherwise script will try to detect it
 
+* **host** - when you run this script on CLI it cannot not identify the host, apparantly, so you have to set the host to query manually
+
 * **dummyFile** - a file inside the sub folder, that is the destination of the redirection rule
 
 * **dummyContent** - HTML-content of the dummy file
