@@ -1,0 +1,22 @@
+{
+
+    "limit": 5000,
+    
+    "coolDown": 2,
+    
+    "repeat": 5,
+    
+    "chunks": 50,
+    
+    "dummyPath": "foobar/",
+    
+    "dummyFile": "index.php",
+    
+    "dummyContent": "Hello world",
+    
+    "htAccess": {
+	"firstLine": "RewriteEngine On",
+	"lines": ""
+    }	    
+   
+}
