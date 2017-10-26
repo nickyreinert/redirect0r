@@ -12,6 +12,8 @@
     
     "scheme":	"http",
     
+    "host":	"foobar.org",
+    
     "dummyFile": "index.php",
     
     "dummyContent": "Hello world",

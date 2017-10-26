@@ -79,8 +79,11 @@
 
 	    $settings->completePath = $_SERVER['DOCUMENT_ROOT'] . $settings->urlPath;
 
-	    $settings->host = str_replace($settings->scriptName, '', $_SERVER['HTTP_HOST']);
-	
+	    if ($settings->host == NULL)
+	    {
+		$settings->host = str_replace($settings->scriptName, '', $_SERVER['HTTP_HOST']);
+	    }
+	    
 	    $settings->lines = 1;
 
 	}
