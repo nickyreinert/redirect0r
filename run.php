@@ -43,7 +43,9 @@
 	    {
 		    $startTime = microtime(true);
 
-		    $dummy = file_get_contents($settings->scheme.'://'.$settings->host.$settings->urlPath.$settings->dummyPath.$i.'/');
+		    $randomIndex = rand(1, $i);
+		    		    
+		    $dummy = file_get_contents($settings->scheme.'://'.$settings->host.$settings->urlPath.$settings->dummyPath.$randomIndex.'/');
 		    
 		    $endTime = round(1000 * (microtime(true) - $startTime));
 
