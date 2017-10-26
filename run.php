@@ -1,5 +1,7 @@
 <?php
 
+	set_time_limit (0);
+
 	if (!isCli()) {ob_start();}
 	
 	prepareSettings();
