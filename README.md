@@ -48,6 +48,8 @@ You need to define a couple of parameters in the file config.json:
 
 * **dummyPath** - sub folder that should be tested (relative to the current script path)
 
+* **scheme** - you can define a scheme (http / https) otherwise script will try to detect it
+
 * **dummyFile** - a file inside the sub folder, that is the destination of the redirection rule
 
 * **dummyContent** - HTML-content of the dummy file

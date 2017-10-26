@@ -67,7 +67,11 @@
 
 	    $settings->scriptName = basename(__FILE__);
 
-	    $settings->scheme = $_SERVER['REQUEST_SCHEME'];
+	    if ($settings->scheme == NULL) {
+		
+		$settings->scheme = $_SERVER['REQUEST_SCHEME'];
+		
+	    }
 	    
 	    $settings->urlPath = str_replace($settings->scriptName, '', $_SERVER['REQUEST_URI']);
 

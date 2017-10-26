@@ -10,6 +10,8 @@
     
     "dummyPath": "foobar/",
     
+    "scheme":	"http",
+    
     "dummyFile": "index.php",
     
     "dummyContent": "Hello world",
