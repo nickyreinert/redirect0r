@@ -1,85 +1,117 @@
 <?php
 
-	set_time_limit (0);
-
 	ob_start();
 	
-	$limit = 100000;
-	
-	$sleep = 10;
-	
-	$repeat = 5;
-	
-	$growHtaccess = TRUE;
-	
-	$chunks = 10;
-	
-	$basePath = str_replace(basename(__FILE__), '', $_SERVER['REQUEST_URI']);
-	
-	$currentUrl = str_replace(basename(__FILE__), '', $_SERVER['SCRIPT_URI']);
-	
-	$dummyPath = 'foobar';
+	prepareSettings();
 
-	$htaccess = 'RewriteEngine On'. PHP_EOL;
+	checkIfDummyFolderExists();
 	
-	$countRows = 1;
+	checkIfDummyFileExists();
 	
 	echo 'Start. <br/ ><br/ >';
+	echo 'Test-URL: <a href="'.$settings->scheme.'://'.$settings->host.$settings->urlPath.$settings->dummyPath.'1/'.'">'.$settings->host.$settings->urlPath.$settings->dummyPath.'1/'.'</a> <br /><br />';
+	echo 'rows;delay [ms];sleep [s] <br />';
 
+	file_put_contents($settings->dummyPath.'.htaccess', $settings->htAccess->firstLine);
+
+	for ($i = 1; $i <= $settings->limit; ++$i)
+	{
+
+		$settings->htAccess->lines .= PHP_EOL.'Redirect 302 '.$settings->urlPath.$settings->dummyPath.$i.'/'.' '.$settings->urlPath.$settings->dummyPath.'index.php';
+			
+		if ($i % round($settings->limit / $settings->chunks) === 0)
+		{
+		
+			file_put_contents($settings->dummyPath.'.htaccess', $settings->htAccess->lines, FILE_APPEND);
+
+			queryDummyUrl($i);
+
+		}
+
+		++$settings->lines;
+
+	}
+
+	echo 'End.';
 	
-	for ($i = 1; $i <= $limit; ++$i)
-	{	
-		if ($growHtaccess === TRUE)
-		{
-			
-			$htaccess .= 'Redirect 302 '.$basePath.$dummyPath.$i.'/'.' '.$currentUrl.'index.php'.PHP_EOL;
-			
-		} else {
-
-			$countRows	= 1;
-		
-			$htaccess = 'RewriteEngine On'. PHP_EOL;
-
-			$htaccess = 'Redirect 302 '.$basePath.$dummyPath.$i.'/'.' '.$currentUrl.'index.php'.PHP_EOL;
-		
-		}
-		
-		if ($i === 1) 
-		{
-			echo 'Redir-Rule: '. $htaccess . '<br />';
-			echo 'Test-URL: '.$currentUrl.$dummyPath.$i.'/ <br /><br />';
-			echo 'rows;delay [ms];sleep [s] <br />';
-
 	
-		}
+	function queryDummyUrl($i)
+	{
+	    global $settings;
 
-		
-		if ($i % round($limit / $chunks) === 0 OR $i === 1)
-		{
-			file_put_contents('.htaccess', $htaccess);
-			
-			for ($j = 1; $j <= $repeat; ++$j)
-			{
-				$startTime = microtime(true);
-				
-				$dummy = file_get_contents($currentUrl.$dummyPath.$i.'/');
+	    for ($j = 1; $j <= $settings->repeat; ++$j)
+	    {
+		    $startTime = microtime(true);
 
-				$endTime = round(1000 * (microtime(true) - $startTime));
-				
-				echo str_pad('',4096);
-				ob_flush();
-				flush();
-				
-				echo $countRows.';'.$endTime.';'.$sleep.'<br />';
-				
-				sleep($sleep);
-				
-			}
-			
-		}
-		
-		++$countRows;
-		
+		    $dummy = file_get_contents($settings->scheme.'://'.$settings->host.$settings->urlPath.$settings->dummyPath.$i.'/');
+		    
+		    $endTime = round(1000 * (microtime(true) - $startTime));
+
+		    echo str_pad('',4096);
+		    ob_flush();
+		    flush();
+
+		    echo $settings->lines.';'.$endTime.';'.$settings->coolDown.'<br />';
+
+		    sleep($settings->coolDown);
+
+	    }
 	}
 	
-	echo 'End.';		
+
+	function prepareSettings()
+	{
+	    global $settings;
+
+	    $settings = json_decode(file_get_contents('config.json'));
+
+	    $settings->scriptName = basename(__FILE__);
+
+	    $settings->scheme = $_SERVER['REQUEST_SCHEME'];
+	    
+	    $settings->urlPath = str_replace($settings->scriptName, '', $_SERVER['REQUEST_URI']);
+
+	    $settings->completePath = $_SERVER['DOCUMENT_ROOT'] . $settings->urlPath;
+
+	    $settings->host = str_replace($settings->scriptName, '', $_SERVER['HTTP_HOST']);
+	
+	    $settings->lines = 1;
+
+	}
+	
+	function checkIfDummyFileExists() 
+	{
+	    global $settings;
+	    
+	    if (!file_exists($settings->completePath.$settings->dummyPath.$settings->dummyFile)) {
+
+		if (!is_writable($settings->completePath.$settings->dummyPath) OR !is_writable($settings->completePath.$settings->dummyPath.$settings->dummyFile))
+		{
+		    die('No permission to create dummy file in '.$settings->completePath.$settings->dummyPath);
+		}
+
+		file_put_contents($settings->completePath.$settings->dummyPath.$settings->dummyFile, $settings->dummyContent);
+
+	    }
+
+	}
+	
+	function checkIfDummyFolderExists()
+	{
+	    global $settings;
+	    
+	    if (!file_exists($settings->completePath.$settings->dummyPath)) {
+
+		if (!is_writable($settings->completePath))
+		{
+		    die('No permission to create dummy folder '.$settings->completePath.$settings->dummyPath);
+		}
+
+		mkdir($settings->completePath.$settings->dummyPath, 0777, true);
+
+		file_put_contents($settings->completePath.$settings->dummyPath.$settings->dummyFile, $settings->dummyContent);
+
+	    }
+
+	}
+	
