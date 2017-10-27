@@ -21,7 +21,7 @@
 
 		$settings->htAccess->lines .= PHP_EOL.'Redirect 302 '.$settings->urlPath.'/'.$settings->dummyPath.$i.'/'.' '.$settings->urlPath.'/'.$settings->dummyPath.'index.php';
 			
-		if ($i % round($settings->limit / $settings->chunks) === 0)
+		if ($i === 1 OR $i % round($settings->limit / $settings->chunks) === 0)
 		{
 		
 			file_put_contents($settings->dummyPath.'.htaccess', $settings->htAccess->lines, FILE_APPEND);
